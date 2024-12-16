@@ -8,11 +8,16 @@ const Stats = (props) => {
   return <p>{props.name} {props.state}</p>
 }
 
+const StatsUnit = (props) => {
+  return <p>{props.name} {props.state} {props.unit}</p>
+}
+
 const App = () => {
   // save clicks of each button to its own state
   const [good, setGood] = useState(0)
   const [neutral, setNeutral] = useState(0)
   const [bad, setBad] = useState(0)
+  const total = good + neutral + bad
 
   return (
     <div>
@@ -24,6 +29,9 @@ const App = () => {
       <Stats name={'good'} state={good}></Stats>
       <Stats name={'neutral'} state={neutral}></Stats>
       <Stats name={'bad'} state={bad}></Stats>
+      <Stats name={'all'} state={total}></Stats>
+      <Stats name={'average'} state={(good - bad) / (total)}></Stats>
+      <StatsUnit name={'positive'} state={(good / total) * 100} unit={'%'}></StatsUnit>
     </div>
   )
 }
