@@ -25,14 +25,23 @@ const PersonForm = ({ name, changeName, number, changeNumber, submit}) => {
   )
 }
 
-const Person = ({ name, number }) => <p>{name} {number}</p>
+const Person = ({ person, removePerson }) => {
+  return (
+    <div>
+      <p>
+        {person.name} {person.number} {" "}   
+        <button onClick={() => removePerson(person)}>delete</button>
+      </p>
+    </div>
+  )
+}
 
-const Persons = ({persons, filter}) => {
+const Persons = ({persons, filter, removePerson}) => {
   const personsToShow = (
     persons.filter(person => (person.name.toLowerCase()).includes(filter.toLowerCase()))
   )
   return (
-    personsToShow.map(person => <Person key={person.id} name={person.name} number={person.number} />)
+    personsToShow.map(person => <Person key={person.id} person={person} removePerson={removePerson}/>)
   )
 }
 
@@ -42,13 +51,15 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [newFilter, setNewFilter] = useState('')
 
-  useEffect(() => {
+  const refreshPersons = () => {
     noteService
       .getAll()
       .then(response => {
         setPersons(response)
       })
-  }, [])
+  }
+
+  useEffect(refreshPersons, [])
 
   const handleNameChange = (event) => {
     setNewName(event.target.value)
@@ -62,10 +73,30 @@ const App = () => {
     setNewFilter(event.target.value)
   }
 
-  const submitNote = (event) => {
+  const showAlert = (person) => {
+    return (() => {
+      alert(
+        `the number '${person.name} ${person.number}' was already deleted from server`
+      )
+      setPersons(persons.filter(p => p.id !== person.id))
+    })
+  }
+
+  const submitPerson = (event) => {
     event.preventDefault()
-    if (persons.map(person => person.name).includes(newName))
-      alert(`${newName} is already added to phonebook`)
+    if (persons.map(person => person.name).includes(newName)) {
+      if (confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)) {
+        const oldPerson = persons.find(person => person.name === newName)
+        const updatedPerson = { ...oldPerson, number: newNumber}
+        noteService
+          .update(updatedPerson.id, updatedPerson).then(response => {
+            setPersons(persons.map(person => person.id === updatedPerson.id ? response : person))
+            setNewName('')
+            setNewNumber('')
+          })
+          .catch(showAlert(oldPerson))
+      }
+    }
     else {
       const personObject = {
         name : newName,
@@ -81,14 +112,25 @@ const App = () => {
     }
   }
 
+  const removePerson = person => {
+    if (confirm(`Delete ${person.name} ?`)) {
+      noteService
+        .remove(person.id)
+        .then(() => {
+          setPersons(persons.filter(filterPerson => filterPerson.id !== person.id))
+        })
+        .catch(showAlert(person))
+    }
+  }
+
   return (
     <div>
       <h2>Phonebook</h2>
       <Filter filter={newFilter} change={handleFilterChange}/>
       <h2>add a new</h2>
-      <PersonForm name={newName} changeName={handleNameChange} number={newNumber} changeNumber={handleNumberChange} submit={submitNote}/>
+      <PersonForm name={newName} changeName={handleNameChange} number={newNumber} changeNumber={handleNumberChange} submit={submitPerson}/>
       <h2>Numbers</h2>
-      <Persons persons={persons} filter={newFilter} />
+      <Persons persons={persons} filter={newFilter} removePerson={removePerson} />
     </div>
   )
 }
