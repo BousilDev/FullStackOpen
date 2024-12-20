@@ -56,6 +56,36 @@ app.delete('/api/persons/:id', (request, response) => {
     response.status(204).end()
   })
 
+app.use(express.json())
+
+const generateId = () => String(Math.floor(Math.random() * 10000))
+  
+app.post('/api/persons', (request, response) => {
+    const body = request.body
+    
+    if (!body.name || !body.number) {
+      return response.status(400).json({ 
+        error: 'name or number missing' 
+      })
+    }
+
+    if (notes.find(note => note.name === body.name)) {
+        return response.status(400).json({
+            error: 'name must be unique'
+        })
+    }
+
+    const note = {
+    id: generateId(),
+    name: body.name,
+    number: body.number
+    }
+
+    notes = notes.concat(note)
+
+    response.json(note)
+  })
+
 const PORT = 3001
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
