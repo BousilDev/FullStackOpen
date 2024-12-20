@@ -1,5 +1,9 @@
 const express = require('express')
+const morgan = require('morgan')
 const app = express()
+app.use(express.json())
+morgan.token('type', function (req, res) { return JSON.stringify(req.body) })
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :type'))
 
 let notes = [
     { 
@@ -55,8 +59,6 @@ app.delete('/api/persons/:id', (request, response) => {
   
     response.status(204).end()
   })
-
-app.use(express.json())
 
 const generateId = () => String(Math.floor(Math.random() * 10000))
   
