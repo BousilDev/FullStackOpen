@@ -1,6 +1,10 @@
 GET https://fullstackopen-fpi0.onrender.com/api/persons
 ###
+GET http://localhost:3001/api/persons
+###
 GET https://fullstackopen-fpi0.onrender.com/info
+###
+GET http://localhost:3001/info
 ###
 DELETE https://fullstackopen-fpi0.onrender.com/api/persons/2
 ###
@@ -10,4 +14,12 @@ content-type: application/json
 {
     "name": "test",
     "number": "123456789"
+}
+###
+POST http://localhost:3001/api/persons
+content-type: application/json
+
+{
+    "name": "testi2",
+    "number": "1122211"
 }

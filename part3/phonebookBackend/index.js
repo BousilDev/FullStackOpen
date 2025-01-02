@@ -1,3 +1,4 @@
+require('dotenv').config()
 const express = require('express')
 const morgan = require('morgan')
 const cors = require('cors')
@@ -7,6 +8,8 @@ app.use(express.static('dist'))
 app.use(cors())
 morgan.token('type', function (req, res) { return JSON.stringify(req.body) })
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :type'))
+
+const Person = require('./models/person')
 
 let notes = [
     { 
@@ -32,28 +35,31 @@ let notes = [
 ]
 
 app.get('/api/persons', (request, response) => {
-  response.json(notes)
+  Person.find({}).then(result => {
+    response.json(result)
+  })
 })
 
 app.get('/info', (request, response) => {
     const date = (new Date()).toString()
-    const message = 
-    `<div>
-        <p>Phonebook has info for ${notes.length} people</p>
-        <p>${date}</p>
-    </div>`
-    response.send(message)
+    Person.find({}).then(result => {
+      const message = 
+      `<div>
+          <p>Phonebook has info for ${result.length} people</p>
+          <p>${date}</p>
+      </div>`
+      response.send(message)
+    })
 })
 
 app.get('/api/persons/:id', (request, response) => {
     const id = request.params.id
-    const note = notes.find(note => note.id === id)
-    
-    if (note) {
-      response.json(note)
-    } else {
+    Person.findById(id).then(person => {
+      response.json(person)
+    })
+    .catch(error => {
       response.status(404).end()
-    }
+    })
   })
 
 app.delete('/api/persons/:id', (request, response) => {
@@ -74,24 +80,26 @@ app.post('/api/persons', (request, response) => {
       })
     }
 
-    if (notes.find(note => note.name === body.name)) {
+    Person.find({"name": body.name}).then(result => {
+      if (result.length !== 0) {
         return response.status(400).json({
-            error: 'name must be unique'
+          error: 'name must be unique'
         })
-    }
-
-    const note = {
-    id: generateId(),
-    name: body.name,
-    number: body.number
-    }
-
-    notes = notes.concat(note)
-
-    response.json(note)
+      }
+      else {
+        const person = new Person({
+          name: body.name,
+          number: body.number
+        })
+        
+        person.save().then(savedPerson => {
+          return response.json(savedPerson)
+        })
+      }
+    })
   })
 
-const PORT = process.env.PORT || 3001
+const PORT = process.env.PORT
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })
