@@ -108,9 +108,13 @@ const App = () => {
             setNewNumber('')
             showMessage(`Updated ${updatedPerson.name}`, setMessage)
           })
-          .catch(() => {
-            showMessage(`Information of ${oldPerson.name} has already been removed from server`, setErrorMessage)
-            setPersons(persons.filter(p => p.id !== oldPerson.id))
+          .catch(error => {
+            if (error.response.status === 400) {
+              showMessage(`${error.response.data.error}`, setErrorMessage)
+            } else {
+              showMessage(`Information of ${oldPerson.name} has already been removed from server`, setErrorMessage)
+              refreshPersons()
+            }
           })
       }
     }
@@ -126,6 +130,10 @@ const App = () => {
           setNewName('')
           setNewNumber('')
           showMessage(`Added ${personObject.name}`, setMessage)
+        })
+        .catch(error => {
+          showMessage(`${error.response.data.error}`, setErrorMessage)
+          console.log(error.response.data.error)
         })
     }
   }
