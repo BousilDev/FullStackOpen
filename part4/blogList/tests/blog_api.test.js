@@ -1,12 +1,12 @@
 const { test, after, beforeEach } = require('node:test')
 const assert = require('node:assert')
-const mongoose = require('mongoose')
 const supertest = require('supertest')
-const app = require('../app')
+const mongoose = require('mongoose')
 const testHelper = require('./test_helper')
-const Blog = require('../models/blog')
-
+const app = require('../app')
 const api = supertest(app)
+
+const Blog = require('../models/blog')
 
 beforeEach(async () => {
     await Blog.deleteMany({})
@@ -26,6 +26,25 @@ test('blogs are returned as json', async () => {
 test('returns correct amount of blogs', async () => {
     const response = await api.get('/api/blogs')
     assert.strictEqual(response.body.length, testHelper.blogs.length)
+})
+
+test('unique identified is named id', async () => {
+    const response = await api.get('/api/blogs')
+    assert(response.body[0].id && !(response.body[0]._id))
+})
+
+test('POST request successfully creates a new blog post', async () => {
+    await api
+        .post('/api/blogs')
+        .send(testHelper.listWithOneBlog[0])
+        .expect(201)
+        .expect('Content-Type', /application\/json/)
+    
+    const blogsAtEnd = await testHelper.blogsInDb()
+    assert.strictEqual(blogsAtEnd.length, testHelper.blogs.length + 1)
+
+    const contents = blogsAtEnd.map(k => k.title)
+    assert(contents.includes('Go To Statement Considered Harmful, test edition'))
 })
 
 after(async () => {
