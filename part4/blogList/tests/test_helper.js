@@ -62,6 +62,30 @@ const listWithOneBlog = [
     }
   ]
 
+const noLikes = {
+    _id: '5a422aa71b54a676237af485',
+    title: 'Like property missing',
+    author: 'Edsger W. Dijkstra',
+    url: 'https://homepages.cwi.nl/~storm/teaching/reader/Dijkstra68.pdf',
+    __v: 0
+}
+
+const noTitle = {
+    _id: '4a522aa71b54a676237af485',
+    author: 'Edsger W. Dijkstra',
+    url: 'https://homepages.cwi.nl/~storm/teaching/reader/Dijkstra68.pdf',
+    likes: 5,
+    __v: 0
+}
+
+const noUrl = {
+    _id: '5a422aa71b54a789234d18f9',
+    title: 'No url',
+    author: 'Edsger W. Dijkstra',
+    likes: 5,
+    __v: 0
+  }
+
 const blogsInDb = async () => {
     const blogs = await Blog.find({})
     return blogs.map(blog => blog.toJSON())
@@ -70,5 +94,8 @@ const blogsInDb = async () => {
 module.exports = {
     blogs,
     listWithOneBlog,
-    blogsInDb
+    blogsInDb, 
+    noLikes, 
+    noTitle,
+    noUrl
 }

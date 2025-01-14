@@ -47,6 +47,31 @@ test('POST request successfully creates a new blog post', async () => {
     assert(contents.includes('Go To Statement Considered Harmful, test edition'))
 })
 
+test('If likes property is missing, it default to 0', async () => {
+    await api   
+        .post('/api/blogs')
+        .send(testHelper.noLikes)
+        .expect(201)
+        .expect('Content-Type', /application\/json/)
+    
+    const blogsAtEnd = await testHelper.blogsInDb()
+    assert((blogsAtEnd.find(k => k.title === 'Like property missing')).likes === 0)
+})
+
+test('If title or url is missing backend responds with status code 400', async () => {
+    await api   
+        .post('/api/blogs')
+        .send(testHelper.noTitle)
+        .expect(400)
+        .expect('Content-Type', /application\/json/)
+
+    await api   
+        .post('/api/blogs')
+        .send(testHelper.noUrl)
+        .expect(400)
+        .expect('Content-Type', /application\/json/)
+})
+
 after(async () => {
     await mongoose.connection.close()
 })
