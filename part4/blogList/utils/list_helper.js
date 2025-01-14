@@ -41,9 +41,32 @@ const mostBlogs = (blogs) => {
   return mostAuthor
 }
 
+const mostLikes = (blogs) => {
+  let authors = []
+  for (let i = 0; i < blogs.length; i++) {
+    const index = authors.findIndex(x => x.author === blogs[i].author)
+    if (index != -1) {
+      authors[index].likes += blogs[i].likes
+    } else {
+      authors = [...authors, {
+        author: blogs[i].author,
+        likes: blogs[i].likes
+      }]
+    }
+  }
+  let mostAuthor = authors[0]
+  for (let i = 0; i < authors.length; i++) {
+    if (authors[i].likes > mostAuthor.likes) {
+      mostAuthor = authors[i]
+    }
+  }
+  return mostAuthor
+}
+
 module.exports = {
   dummy,
   totalLikes,
   favoriteBlog,
-  mostBlogs
+  mostBlogs,
+  mostLikes
 }
