@@ -19,8 +19,31 @@ const favoriteBlog = (blogs) => {
   return max
 }
 
+const mostBlogs = (blogs) => {
+  let authors = []
+  for (let i = 0; i < blogs.length; i++) {
+    const index = authors.findIndex(x => x.author === blogs[i].author)
+    if (index != -1) {
+      authors[index].blogs += 1
+    } else {
+      authors = [...authors, {
+        author: blogs[i].author,
+        blogs: 1
+      }]
+    }
+  }
+  let mostAuthor = authors[0]
+  for (let i = 0; i < authors.length; i++) {
+    if (authors[i].blogs > mostAuthor.blogs) {
+      mostAuthor = authors[i]
+    }
+  }
+  return mostAuthor
+}
+
 module.exports = {
   dummy,
   totalLikes,
-  favoriteBlog
+  favoriteBlog,
+  mostBlogs
 }
