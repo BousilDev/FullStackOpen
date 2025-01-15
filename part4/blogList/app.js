@@ -12,6 +12,8 @@ const mongoose = require('mongoose')
 const mongoUrl = config.MONGODB_URI
 mongoose.connect(mongoUrl)
 
+app.use(middleware.tokenExtractor)
+
 app.use(cors())
 app.use(express.json())
 
