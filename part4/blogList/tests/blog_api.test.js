@@ -1,4 +1,4 @@
-const { test, after, beforeEach } = require('node:test')
+const { test, after, beforeEach, describe } = require('node:test')
 const assert = require('node:assert')
 const supertest = require('supertest')
 const mongoose = require('mongoose')
@@ -71,6 +71,62 @@ test('If title or url is missing backend responds with status code 400', async (
         .expect(400)
         .expect('Content-Type', /application\/json/)
 })
+
+describe('Deleting ', async () => {
+    test('a blog with an existing id works', async () => {
+        const id = testHelper.blogs[0]._id
+
+        await api
+            .delete(`/api/blogs/${id}`)
+            .expect(204)
+        
+        const blogsAtEnd = await testHelper.blogsInDb()
+        assert.strictEqual(blogsAtEnd.length, testHelper.blogs.length - 1)
+        assert(!(blogsAtEnd.find(k => k.id === id)))
+    })
+
+    test('a non existing blog leads to status code 400', async () => {
+        const id = 123
+        await api
+            .delete(`/api/blogs/${id}`)
+            .expect(400)
+            
+        const blogsAtEnd = await testHelper.blogsInDb()
+        assert.strictEqual(blogsAtEnd.length, testHelper.blogs.length)
+    })
+})
+
+describe('Updating', async () => {
+    test('a blog with an existing id works', async () => {
+        const id = testHelper.blogs[0]._id
+        const updatedBlog = { ...testHelper.blogs[0], title: "updated title" }
+
+        await api
+            .put(`/api/blogs/${id}`)
+            .send(updatedBlog)
+            .expect(200)
+            .expect('Content-Type', /application\/json/)
+        
+        const blogsAtEnd = await testHelper.blogsInDb()
+        assert.strictEqual(blogsAtEnd.length, testHelper.blogs.length)
+        assert((blogsAtEnd.find(k => k.title === "updated title")))
+    })
+
+    test('a non existing blog leads to status code 400', async () => {
+        const id = 123
+        const updatedBlog = { ...testHelper.blogs[0], title: "updated title" }
+
+        await api
+            .put(`/api/blogs/${id}`)
+            .send(updatedBlog)
+            .expect(400)
+        
+        const blogsAtEnd = await testHelper.blogsInDb()
+        assert.strictEqual(blogsAtEnd.length, testHelper.blogs.length)
+        assert(!(blogsAtEnd.find(k => k.title === "updated title")))
+    })
+})
+
 
 after(async () => {
     await mongoose.connection.close()
