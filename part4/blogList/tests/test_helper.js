@@ -94,14 +94,18 @@ const blogsInDb = async () => {
 
 const users = [
   {
+    _id: '5a422aa71b5c4789234d18f9',
     username: "eki",
     name: "eero",
-    password: "moniste"
+    password: "moniste",
+    __v: 0
   },
   {
+    _id: '8a422aa7163c4789234d18f9',
     username: "jari",
     name: "markku",
-    password: "koni"
+    password: "koni",
+    __v: 0
   }
 ]
 
