@@ -9,7 +9,7 @@ import loginService from './services/login'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
-  const [username, setUsername] = useState('') 
+  const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [message, setMessage] = useState(null)
   const [messageType, setMessageType] = useState(null)
@@ -27,7 +27,7 @@ const App = () => {
       blogs.sort((a, b) => b.likes - a.likes)
       setBlogs( blogs )
     }
-    ) 
+    )
   }
 
   useEffect(() => {
@@ -110,7 +110,7 @@ const App = () => {
   )
 
   const handleBlogUpdate = async blog => {
-    const updatedBlog = { ...blog, likes: blog.likes + 1, user: blog.user.id}
+    const updatedBlog = { ...blog, likes: blog.likes + 1, user: blog.user.id }
     delete updatedBlog.id
     await blogService.update(blog.id, updatedBlog)
     refreshBlogs()
@@ -126,13 +126,13 @@ const App = () => {
   return (
     <div>
       <Notification message={message} className={messageType} />
-    
+
       {user === null ?
-          <div>
-            <h2>Log in to application</h2>
-            {loginForm()}
-          </div>
-      :
+        <div>
+          <h2>Log in to application</h2>
+          {loginForm()}
+        </div>
+        :
         <div>
           <h2>blogs</h2>
           <p>{user.name} logged in</p>
@@ -144,7 +144,7 @@ const App = () => {
         </div>
       }
     </div>
-    )
+  )
 }
 
 export default App

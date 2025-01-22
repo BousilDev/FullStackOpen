@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
 const Blog = ({ blog, handleBlogUpdate, handleBlogRemove, user }) => {
-  
+
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -11,7 +11,7 @@ const Blog = ({ blog, handleBlogUpdate, handleBlogRemove, user }) => {
   }
 
   const [visible, setVisible] = useState(false)
-  
+
   const labelName = visible ? 'hide' : 'view'
 
   const toggleVisibility = () => {
@@ -22,7 +22,7 @@ const Blog = ({ blog, handleBlogUpdate, handleBlogRemove, user }) => {
     <div style={blogStyle}>
       {blog.title}
       <button onClick={toggleVisibility}>{labelName}</button>
-      {visible && 
+      {visible &&
         <div>
           {blog.url}
           <br></br>
@@ -38,6 +38,6 @@ const Blog = ({ blog, handleBlogUpdate, handleBlogRemove, user }) => {
         </div>
       }
     </div>
-)}
+  )}
 
 export default Blog
