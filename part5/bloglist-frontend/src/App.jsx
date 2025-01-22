@@ -22,10 +22,16 @@ const App = () => {
     }, 5000)
   }
 
-  useEffect(() => {
-    blogService.getAll().then(blogs =>
+  const refreshBlogs = () => {
+    blogService.getAll().then(blogs => {
+      blogs.sort((a, b) => b.likes - a.likes)
       setBlogs( blogs )
+    }
     ) 
+  }
+
+  useEffect(() => {
+    refreshBlogs()
   }, [])
 
   useEffect(() => {
@@ -88,9 +94,7 @@ const App = () => {
       const newBlog = newBlogRef.current.blog
       await blogService.create(newBlog)
       newBlogRef.current.resetStates()
-      blogService.getAll().then(blogs =>
-        setBlogs( blogs )
-      )
+      refreshBlogs()
       setMessageType('success')
       showMessage(`${newBlog.title} by ${newBlog.author} added`)
     } catch (exception) {
@@ -105,13 +109,18 @@ const App = () => {
     </Togglable>
   )
 
-  const handleBlogUpdate = blog => {
-    const updatedBlog = { ...blog, likes: blog.likes + 1, user: user.id}
+  const handleBlogUpdate = async blog => {
+    const updatedBlog = { ...blog, likes: blog.likes + 1, user: blog.user.id}
     delete updatedBlog.id
-    blogService.update(blog.id, updatedBlog)
-    blogService.getAll().then(blogs =>
-      setBlogs( blogs )
-    )
+    await blogService.update(blog.id, updatedBlog)
+    refreshBlogs()
+  }
+
+  const handleBlogRemove = async blog => {
+    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
+      await blogService.remove(blog.id)
+      refreshBlogs()
+    }
   }
 
   return (
@@ -130,7 +139,7 @@ const App = () => {
           <button onClick={handleLogout}>logout</button>
           {blogForm()}
           {blogs.map(blog =>
-            <Blog key={blog.id} blog={blog} handleBlogUpdate={handleBlogUpdate}/>
+            <Blog key={blog.id} blog={blog} handleBlogUpdate={handleBlogUpdate} handleBlogRemove={handleBlogRemove} user={user}/>
           )}
         </div>
       }
