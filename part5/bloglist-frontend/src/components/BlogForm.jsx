@@ -1,6 +1,6 @@
-import { useState, forwardRef, useImperativeHandle } from 'react'
+import { useState } from 'react'
 
-const BlogForm = forwardRef((props, refs) => {
+const BlogForm = ({ handleNewBlog }) => {
 
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
@@ -12,7 +12,7 @@ const BlogForm = forwardRef((props, refs) => {
     setUrl('')
   }
 
-  const inputField = (value, name, setValue) => {
+  const inputField = (value, name, setValue, id) => {
     return (
       <div>
         {name}:
@@ -21,33 +21,34 @@ const BlogForm = forwardRef((props, refs) => {
           value={value}
           name={name}
           onChange={({ target }) => setValue(target.value)}
+          id={id}
         />
       </div>
     )
   }
 
-  useImperativeHandle(refs, () => {
-    return { blog: {
+  const addBlog = (event) => {
+    event.preventDefault()
+    handleNewBlog({
       title: title,
       author: author,
       url: url
-    }, resetStates
-    }
-  })
+    })
+    resetStates()
+  }
 
   return (
     <div>
       <h2>create new</h2>
-      <form onSubmit={props.handleNewBlog}>
-        {inputField(title, 'title', setTitle)}
-        {inputField(author, 'author', setAuthor)}
-        {inputField(url, 'url', setUrl)}
+      <form onSubmit={addBlog}>
+        {inputField(title, 'title', setTitle, 'title-input')}
+        {inputField(author, 'author', setAuthor, 'author-input')}
+        {inputField(url, 'url', setUrl, 'url-input')}
         <button type="submit">create</button>
       </form>
     </div>
   )
 }
-)
 
 BlogForm.displayName = 'BlogForm'
 

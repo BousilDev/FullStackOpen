@@ -86,17 +86,12 @@ const App = () => {
     )
   }
 
-  const newBlogRef = useRef()
-
-  const handleNewBlog = async (event) => {
-    event.preventDefault()
+  const handleNewBlog = async (blog) => {
     try {
-      const newBlog = newBlogRef.current.blog
-      await blogService.create(newBlog)
-      newBlogRef.current.resetStates()
+      await blogService.create(blog)
       refreshBlogs()
       setMessageType('success')
-      showMessage(`${newBlog.title} by ${newBlog.author} added`)
+      showMessage(`${blog.title} by ${blog.author} added`)
     } catch (exception) {
       setMessageType('error')
       showMessage('Adding new blog failed')
@@ -105,7 +100,7 @@ const App = () => {
 
   const blogForm = () => (
     <Togglable buttonLabel={'create new blog'}>
-      <BlogForm handleNewBlog={handleNewBlog} ref={newBlogRef}/>
+      <BlogForm handleNewBlog={handleNewBlog}/>
     </Togglable>
   )
 
