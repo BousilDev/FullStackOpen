@@ -10,5 +10,15 @@ const createBlog = async (page, content) => {
     await page.getByTestId('author-input').fill(content.author)
     await page.getByTestId('url-input').fill(content.url)
     await page.getByRole('button', { name: 'create' }).click()
+    await page.getByRole('button', { name: 'cancel' }).click()
+    await page.getByText(`${content.title} ${content.author}`).waitFor()
   }
-export { loginWith, createBlog }
+
+const likeBlog = async (page, { title, author }) => {
+    const div = await page.getByText(`${title} ${author}`)
+    await div.getByRole('button', { name: 'view' }).click()
+    await div.getByRole('button', { name: 'like' }).click()
+    await div.getByRole('button', { name: 'hide' }).click()
+    await div.getByRole('button', { name: 'view'}).waitFor()
+}
+export { loginWith, createBlog, likeBlog }
