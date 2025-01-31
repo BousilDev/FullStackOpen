@@ -22,6 +22,7 @@ const BlogForm = ({ handleNewBlog }) => {
           name={name}
           onChange={({ target }) => setValue(target.value)}
           id={id}
+          data-testid={id}
         />
       </div>
     )
