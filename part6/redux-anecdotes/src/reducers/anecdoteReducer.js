@@ -10,7 +10,7 @@ const anecdoteSlice = createSlice({
   initialState: [],
   reducers: {
     appendAnecdote(state, action) {
-      return ensureOrder(state.push(action.payload))
+      return ensureOrder(state.concat([action.payload]))
     },
     setAnecdotes(state, action) {
       return ensureOrder(action.payload)
@@ -18,7 +18,7 @@ const anecdoteSlice = createSlice({
   }
 })
 
-export const { appendAnecdote, setAnecdotes } = anecdoteSlice.actions
+const { appendAnecdote, setAnecdotes } = anecdoteSlice.actions
 
 export const createVote = (id) => {
   return async (dispatch, getState) => {
