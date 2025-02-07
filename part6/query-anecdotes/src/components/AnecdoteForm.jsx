@@ -10,6 +10,12 @@ const AnecdoteForm = () => {
     onSuccess: (newAnecdote) => {
       const anecdotes = queryClient.getQueryData(['anecdotes'])
       queryClient.setQueryData(['anecdotes'], anecdotes.concat(newAnecdote))
+    },
+    onError: (error) => {
+      dispatch({type: "SET", payload: error.response.data.error})
+      setTimeout(() => {
+        dispatch({type: "NULL"})
+      }, 5000)
     }
   })
 
