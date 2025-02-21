@@ -10,17 +10,23 @@ import {
   addNotification,
   resetNotification
 } from './reducers/notificationReducer'
+import {
+  setBlogs,
+  addBlog,
+  removeBlog,
+  updateBlog
+} from './reducers/blogReducer'
 
 import loginService from './services/login'
 
 const App = () => {
-  const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
 
   const dispatch = useDispatch()
   const { notification, type } = useSelector((state) => state.notification)
+  const blogs = useSelector((state) => state.blog)
 
   const showMessage = (msg, msgType) => {
     dispatch(addNotification({ notification: msg, type: msgType }))
@@ -29,15 +35,10 @@ const App = () => {
     }, 5000)
   }
 
-  const refreshBlogs = () => {
-    blogService.getAll().then((blogs) => {
-      blogs.sort((a, b) => b.likes - a.likes)
-      setBlogs(blogs)
-    })
-  }
-
   useEffect(() => {
-    refreshBlogs()
+    blogService.getAll().then((blogs) => {
+      dispatch(setBlogs(blogs))
+    })
   }, [])
 
   useEffect(() => {
@@ -91,8 +92,7 @@ const App = () => {
 
   const handleNewBlog = async (blog) => {
     try {
-      await blogService.create(blog)
-      refreshBlogs()
+      dispatch(addBlog(await blogService.create(blog)))
       showMessage(`${blog.title} by ${blog.author} added`, 'success')
     } catch (exception) {
       showMessage('Adding new blog failed', 'error')
@@ -109,13 +109,13 @@ const App = () => {
     const updatedBlog = { ...blog, likes: blog.likes + 1, user: blog.user.id }
     delete updatedBlog.id
     await blogService.update(blog.id, updatedBlog)
-    refreshBlogs()
+    dispatch(updateBlog({ ...blog, likes: blog.likes + 1 }))
   }
 
   const handleBlogRemove = async (blog) => {
     if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
       await blogService.remove(blog.id)
-      refreshBlogs()
+      dispatch(removeBlog(blog))
     }
   }
 
