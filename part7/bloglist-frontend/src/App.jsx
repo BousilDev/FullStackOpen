@@ -16,17 +16,18 @@ import {
   removeBlog,
   updateBlog
 } from './reducers/blogReducer'
+import { setUser, resetUser } from './reducers/userReducer'
 
 import loginService from './services/login'
 
 const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const [user, setUser] = useState(null)
 
   const dispatch = useDispatch()
   const { notification, type } = useSelector((state) => state.notification)
   const blogs = useSelector((state) => state.blog)
+  const user = useSelector((state) => state.user)
 
   const showMessage = (msg, msgType) => {
     dispatch(addNotification({ notification: msg, type: msgType }))
@@ -45,7 +46,7 @@ const App = () => {
     const loggedUserJSON = window.localStorage.getItem('loggedUser')
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
-      setUser(user)
+      dispatch(setUser(user))
       blogService.setToken(user.token)
     }
   }, [])
@@ -59,7 +60,7 @@ const App = () => {
       })
       window.localStorage.setItem('loggedUser', JSON.stringify(user))
       blogService.setToken(user.token)
-      setUser(user)
+      dispatch(setUser(user))
       setUsername('')
       setPassword('')
       showMessage('Logged in', 'success')
@@ -72,7 +73,7 @@ const App = () => {
     event.preventDefault()
     try {
       window.localStorage.removeItem('loggedUser')
-      setUser(null)
+      dispatch(resetUser())
     } catch (exception) {
       showMessage('Logout failed', 'error')
     }
