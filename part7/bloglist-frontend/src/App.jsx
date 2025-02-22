@@ -7,6 +7,7 @@ import Togglable from './components/Togglable'
 import BlogForm from './components/BlogForm'
 import Users from './components/Users'
 import SingleUser from './components/SingleUser'
+import SingleBlog from './components/SingleBlog'
 import blogService from './services/blogs'
 import userService from './services/users'
 import {
@@ -62,9 +63,14 @@ const App = () => {
     })
   }, [])
 
-  const match = useMatch('/users/:id')
-  const selectedUser = match
-    ? users.find((user) => user.id === match.params.id)
+  const userMatch = useMatch('/users/:id')
+  const selectedUser = userMatch
+    ? users.find((user) => user.id === userMatch.params.id)
+    : null
+
+  const blogMatch = useMatch('/blogs/:id')
+  const selectedBlog = blogMatch
+    ? blogs.find((blog) => blog.id === blogMatch.params.id)
     : null
 
   const handleLogin = async (event) => {
@@ -157,13 +163,7 @@ const App = () => {
                 <div>
                   {blogForm()}
                   {blogs.map((blog) => (
-                    <Blog
-                      key={blog.id}
-                      blog={blog}
-                      handleBlogUpdate={handleBlogUpdate}
-                      handleBlogRemove={handleBlogRemove}
-                      user={user}
-                    />
+                    <Blog key={blog.id} blog={blog} />
                   ))}
                 </div>
               }
@@ -172,6 +172,17 @@ const App = () => {
             <Route
               path="/users/:id"
               element={<SingleUser user={selectedUser} />}
+            />
+            <Route
+              path="/blogs/:id"
+              element={
+                <SingleBlog
+                  blog={selectedBlog}
+                  handleBlogUpdate={handleBlogUpdate}
+                  handleBlogRemove={handleBlogRemove}
+                  user={user}
+                />
+              }
             />
           </Routes>
         </div>
