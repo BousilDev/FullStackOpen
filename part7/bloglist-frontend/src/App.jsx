@@ -5,7 +5,10 @@ import Notification from './components/Notification'
 import LoginForm from './components/LoginForm'
 import Togglable from './components/Togglable'
 import BlogForm from './components/BlogForm'
+import Users from './components/Users'
+import SingleUser from './components/SingleUser'
 import blogService from './services/blogs'
+import userService from './services/users'
 import {
   addNotification,
   resetNotification
@@ -19,10 +22,12 @@ import {
 import { setUser, resetUser } from './reducers/userReducer'
 
 import loginService from './services/login'
+import { Route, Routes, useMatch } from 'react-router-dom'
 
 const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
+  const [users, setUsers] = useState([])
 
   const dispatch = useDispatch()
   const { notification, type } = useSelector((state) => state.notification)
@@ -50,6 +55,17 @@ const App = () => {
       blogService.setToken(user.token)
     }
   }, [])
+
+  useEffect(() => {
+    userService.getAll().then((users) => {
+      setUsers(users)
+    })
+  }, [])
+
+  const match = useMatch('/users/:id')
+  const selectedUser = match
+    ? users.find((user) => user.id === match.params.id)
+    : null
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -134,16 +150,30 @@ const App = () => {
           <h2>blogs</h2>
           <p>{user.name} logged in</p>
           <button onClick={handleLogout}>logout</button>
-          {blogForm()}
-          {blogs.map((blog) => (
-            <Blog
-              key={blog.id}
-              blog={blog}
-              handleBlogUpdate={handleBlogUpdate}
-              handleBlogRemove={handleBlogRemove}
-              user={user}
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <div>
+                  {blogForm()}
+                  {blogs.map((blog) => (
+                    <Blog
+                      key={blog.id}
+                      blog={blog}
+                      handleBlogUpdate={handleBlogUpdate}
+                      handleBlogRemove={handleBlogRemove}
+                      user={user}
+                    />
+                  ))}
+                </div>
+              }
             />
-          ))}
+            <Route path="/users" element={<Users users={users} />} />
+            <Route
+              path="/users/:id"
+              element={<SingleUser user={selectedUser} />}
+            />
+          </Routes>
         </div>
       )}
     </div>

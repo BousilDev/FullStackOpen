@@ -18,6 +18,7 @@ module.exports = {
   settings: { react: { version: '18.2' } },
   plugins: ['react-refresh'],
   rules: {
+    'react/prop-types': 0,
     'prettier/prettier': [
       'error',
       {
