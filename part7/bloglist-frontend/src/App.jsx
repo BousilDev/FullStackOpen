@@ -8,6 +8,7 @@ import BlogForm from './components/BlogForm'
 import Users from './components/Users'
 import SingleUser from './components/SingleUser'
 import SingleBlog from './components/SingleBlog'
+import Navigation from './components/Navigation'
 import blogService from './services/blogs'
 import userService from './services/users'
 import {
@@ -153,9 +154,8 @@ const App = () => {
         </div>
       ) : (
         <div>
-          <h2>blogs</h2>
-          <p>{user.name} logged in</p>
-          <button onClick={handleLogout}>logout</button>
+          <Navigation handleLogout={handleLogout} name={user.name} />
+          <h2>blog app</h2>
           <Routes>
             <Route
               path="/"
