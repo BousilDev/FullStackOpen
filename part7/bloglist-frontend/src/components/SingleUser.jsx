@@ -1,3 +1,5 @@
+import { Ul, Li } from '../styled'
+
 const SingleUser = ({ user }) => {
   if (!user) {
     return <p>no user found</p>
@@ -6,11 +8,11 @@ const SingleUser = ({ user }) => {
     <div>
       <h2>{user.name}</h2>
       <h3>added blogs</h3>
-      <ul>
+      <Ul>
         {user.blogs.map((blog) => (
-          <li key={blog.id}>{blog.title}</li>
+          <Li key={blog.id}>{blog.title}</Li>
         ))}
-      </ul>
+      </Ul>
     </div>
   )
 }

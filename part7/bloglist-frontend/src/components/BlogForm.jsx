@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Input, Button } from '../styled'
 
 const BlogForm = ({ handleNewBlog }) => {
   const [title, setTitle] = useState('')
@@ -15,7 +16,7 @@ const BlogForm = ({ handleNewBlog }) => {
     return (
       <div>
         {name}:
-        <input
+        <Input
           type="text"
           value={value}
           name={name}
@@ -38,15 +39,15 @@ const BlogForm = ({ handleNewBlog }) => {
   }
 
   return (
-    <div>
+    <span>
       <h2>create new</h2>
-      <form onSubmit={addBlog}>
+      <form style={{ display: 'inline' }} onSubmit={addBlog}>
         {inputField(title, 'title', setTitle, 'title-input')}
         {inputField(author, 'author', setAuthor, 'author-input')}
         {inputField(url, 'url', setUrl, 'url-input')}
-        <button type="submit">create</button>
+        <Button type="submit">create</Button>
       </form>
-    </div>
+    </span>
   )
 }
 

@@ -1,23 +1,25 @@
+import { Table, Tr, Td } from '../styled'
+
 const Users = ({ users }) => {
   return (
     <div>
       <h2>Users</h2>
-      <table>
+      <Table>
         <tbody>
-          <tr>
+          <Tr>
             <th></th>
             <th>blogs created</th>
-          </tr>
+          </Tr>
           {users.map((user) => (
-            <tr key={user.id}>
-              <td>
+            <Tr key={user.id}>
+              <Td>
                 <a href={`/users/${user.id}`}>{user.name}</a>
-              </td>
-              <td>{user.blogs.length}</td>
-            </tr>
+              </Td>
+              <Td>{user.blogs.length}</Td>
+            </Tr>
           ))}
         </tbody>
-      </table>
+      </Table>
     </div>
   )
 }

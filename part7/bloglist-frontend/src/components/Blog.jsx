@@ -1,18 +1,12 @@
-const Blog = ({ blog }) => {
-  const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    border: 'solid',
-    borderWidth: 1,
-    marginBottom: 5
-  }
+import { BlogStyle } from '../styled'
 
+const Blog = ({ blog }) => {
   return (
-    <div style={blogStyle} data-testid="blogElement">
+    <BlogStyle data-testid="blogElement">
       <a href={`/blogs/${blog.id}`}>
         {blog.title} {blog.author}
       </a>
-    </div>
+    </BlogStyle>
   )
 }
 

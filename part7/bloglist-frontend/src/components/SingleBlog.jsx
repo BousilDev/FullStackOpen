@@ -1,5 +1,6 @@
 import blogService from '../services/blogs'
 import { useEffect, useState } from 'react'
+import { Ul, Li, Input, SmallButton as Button, CancelButton } from '../styled'
 
 const SingleBlog = ({ blog, handleBlogUpdate, handleBlogRemove, user }) => {
   const [comment, setComment] = useState('')
@@ -31,27 +32,29 @@ const SingleBlog = ({ blog, handleBlogUpdate, handleBlogRemove, user }) => {
       <br></br>
       <div className="likes">
         {blog.likes} likes
-        <button onClick={() => handleBlogUpdate(blog)}>like</button>
+        <Button onClick={() => handleBlogUpdate(blog)}>like</Button>
       </div>
       added by {blog.user.name}
       {blog.user.username === user.username && (
         <div>
-          <button onClick={() => handleBlogRemove(blog)}>remove</button>
+          <CancelButton onClick={() => handleBlogRemove(blog)}>
+            remove
+          </CancelButton>
         </div>
       )}
       <h3>comments</h3>
       <form onSubmit={handleComment}>
-        <input
+        <Input
           value={comment}
           onChange={({ target }) => setComment(target.value)}
-        ></input>
-        <button type="submit">add comment</button>
+        />
+        <Button type="submit">add comment</Button>
       </form>
-      <ul>
+      <Ul>
         {comments.map((comment) => (
-          <li key={comment}>{comment}</li>
+          <Li key={comment}>{comment}</Li>
         ))}
-      </ul>
+      </Ul>
     </div>
   )
 }

@@ -25,6 +25,7 @@ import { setUser, resetUser } from './reducers/userReducer'
 
 import loginService from './services/login'
 import { Route, Routes, useMatch } from 'react-router-dom'
+import { H2 } from './styled'
 
 const App = () => {
   const [username, setUsername] = useState('')
@@ -149,13 +150,13 @@ const App = () => {
 
       {user === null ? (
         <div>
-          <h2>Log in to application</h2>
+          <H2>Log in to application</H2>
           {loginForm()}
         </div>
       ) : (
         <div>
           <Navigation handleLogout={handleLogout} name={user.name} />
-          <h2>blog app</h2>
+          <H2>Blog app</H2>
           <Routes>
             <Route
               path="/"
